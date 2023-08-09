@@ -20,12 +20,22 @@
         LEVEL: <span id="level">{{ level }}</span>
       </div>
     </div>
+    <div class="controller" v-if="isMobile">
+      <div>
+        <button @click="mobileController('ArrowUp')" id="up">上</button>
+        <button @click="mobileController('ArrowDown')" id="down">下</button>
+        <button @click="mobileController('ArrowLeft')" id="left">左</button>
+        <button @click="mobileController('ArrowRight')" id="right">右</button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup >
 import { ref,  onMounted, nextTick } from 'vue';
 import type { Ref } from 'vue';
+
+const isMobile: Ref<boolean> = ref(false)
 
 const isStart: Ref<boolean> = ref(false);
 const isOver: Ref<boolean> = ref(false);
@@ -62,6 +72,13 @@ const levelUp = ():void => {
   level.value += 1
 }
 
+const mobileController = (buttonDirection: string):void => {
+  if(isStart.value === false){
+    isStart.value = true
+    run()
+  }
+  direction.value = buttonDirection
+}
 const keydownHandler = (e: KeyboardEvent):void => {
   direction.value = e.key
   if(isStart.value === false){
@@ -145,7 +162,12 @@ const run = async(): Promise<void> => {
   }, 300 - (level.value - 1) * 30);
 }
 onMounted(() => {
-  document.addEventListener('keydown', keydownHandler);
+  if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+    isMobile.value = true
+  }else{
+    document.addEventListener('keydown', keydownHandler);
+  }
+  
   changePosition()
 });
 </script>
@@ -160,7 +182,6 @@ onMounted(() => {
 
 #main {
   width: 360px;
-  height: 400px;
   background-color: rgb(165, 92, 249);
   margin: 30px auto 30px;
   border: 10px solid rgb(255, 219, 101);
@@ -171,56 +192,90 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   justify-content: space-around;
-  padding: 10px 0;
+  gap: 20px;
+  padding: 10px 0 20px;
   #stage{
-  width: 304px;
-  height: 304px;
-  border: 2px solid #595959;
-  position: relative;
-  background: black;
-  #snake{
-    &>div{
+    width: 304px;
+    height: 304px;
+    border: 2px solid #595959;
+    position: relative;
+    background: black;
+    #snake{
+      &>div{
+        width: 10px;
+        height: 10px;
+        border: 1px solid #b7d4a8;
+        background-color: black;
+        position: absolute;
+      }
+      .snakeBody{
+        background: #aaff83;
+      }
+      .snakeHead{
+        background: #00d335;
+        z-index: 10;
+        left: 40px;
+        top: 40px
+      }
+    }
+    &>#food{
+      position: absolute;
+      left: 40px;
+      top: 10px;
       width: 10px;
       height: 10px;
-      border: 1px solid #b7d4a8;
-      background-color: black;
-      position: absolute;
-    }
-    .snakeBody{
-      background: #aaff83;
-    }
-    .snakeHead{
-      background: #00d335;
-      z-index: 10;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: space-between;
+      & > div{
+        width: 4px;
+        height: 4px;
+        background-color: red;
+        animation: rotate alternate 3s infinite;
+      }
     }
   }
-  &>#food{
-    position: absolute;
-    left: 40px;
-    top: 10px;
-    width: 10px;
-    height: 10px;
+
+  #score-panel{
+    width: 100%;
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: space-between;
-    & > div{
-      width: 4px;
-      height: 4px;
-      background-color: red;
-      animation: rotate alternate 3s infinite;
+    justify-content: space-around;
+    align-items: center;
+    color: wheat;
+  }
+
+  .controller{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    &>div{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(3, 1fr);
+      gap: 5px;
+      #up{
+        grid-column: 2/3;
+        grid-row: 1/2;
+      }
+      #down{
+        grid-column: 2/3;
+        grid-row: 3/4;
+      }
+      #left{
+        grid-column: 1/2;
+        grid-row: 2/3;
+      }
+      #right{
+        grid-column: 3/4;
+        grid-row: 2/3;
+      }
+    }
+    button{
+      background: #95ff9c;
+      color: #008521;
     }
   }
-}
-
-#score-panel{
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  color: wheat;
-}
-
 }
 
 
