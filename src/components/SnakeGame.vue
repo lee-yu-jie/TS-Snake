@@ -162,7 +162,7 @@ onMounted(() => {
   width: 360px;
   height: 400px;
   background-color: rgb(165, 92, 249);
-  margin: 100px auto 30px;
+  margin: 30px auto 30px;
   border: 10px solid rgb(255, 219, 101);
   border-radius: 10px;
   font-size: 20px;

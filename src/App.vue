@@ -1,4 +1,7 @@
 <template>
+  <div class="sign">
+    <p>請按下鍵盤的'上','下','左','右'鍵開始遊戲並控制蛇的移動</p>
+  </div>
   <SnakeGame 
     :key="changeTime"
   />
@@ -22,6 +25,18 @@ const reStart = ():void => {
 .button-box{
   display: flex;
   justify-content: center;
+}
+.sign{
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+  color: red;
+  padding-top: 30px;
+  p{
+    padding: 10px 20px;
+    background: rgb(255, 186, 186);
+    border-radius: 10px;
+  }
 }
 button{
   background: rgb(88, 227, 255);
