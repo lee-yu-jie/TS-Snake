@@ -1,27 +1,35 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js + TypeScript App"/>
+  <SnakeGame 
+    :key="changeTime"
+  />
+  <div class="button-box">
+    <button @click="reStart">重新開始</button>
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+<script lang="ts" setup>
+import SnakeGame from './components/SnakeGame.vue';
+import { ref } from 'vue';
+import type { Ref } from 'vue';
 
-export default defineComponent({
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-});
+let changeTime: Ref<number> = ref(new Date().getTime())
+const reStart = ():void => {
+  changeTime.value = new Date().getTime()
+}
 </script>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+.button-box{
+  display: flex;
+  justify-content: center;
+}
+button{
+  background: rgb(88, 227, 255);
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px skyblue solid;
+  color: rgb(0, 109, 242);
+  cursor: pointer;
+  font-size: 20px;
 }
 </style>
