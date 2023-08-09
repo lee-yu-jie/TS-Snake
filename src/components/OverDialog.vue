@@ -17,7 +17,7 @@ const props = defineProps<{
 <style lang="scss" scoped>
 .over-container{
   position: absolute;
-  top: 200px ;
+  top: 250px ;
   right: 0;
   bottom: 0;
   left: 0;
@@ -26,7 +26,7 @@ const props = defineProps<{
   align-items: start;
   z-index: 20;
   .over-dialog{
-    background: rgba(255, 255, 255, 0.387);;
+    background: rgba(255, 255, 255, 0.623);;
     padding: 20px 40px;
     border-radius: 10px;
     display: flex;

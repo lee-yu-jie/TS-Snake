@@ -1,6 +1,6 @@
 <template>
   <div id="main">
-    <div id="stage">
+    <div id="stage" :class="{'easy-mode': props.isEasy}">
       <div id="snake">
         <div ref="snakeHead" class="snakeHead"></div>
         <div v-for="snake in bodyLength" :key="snake" class="snakeBody" ref="snakeBod"></div>
@@ -38,9 +38,12 @@ import type { Ref } from 'vue';
 const emits = defineEmits<{
   (e: 'gameOver', overString: string): void
 }>()
+const props = defineProps<{
+  isEasy: boolean
+}>()
+
 const isMobile: Ref<boolean> = ref(false)
 const isStart: Ref<boolean> = ref(false);
-const isOver: Ref<boolean> = ref(false);
 
 const score: Ref<number> = ref(0);
 const level: Ref<number> = ref(1);
@@ -112,7 +115,6 @@ const run = async(): Promise<void> => {
 
   // 當碰到牆壁的時候
   if(left < 0 || left > 290 || top < 0 || top > 290){
-    isOver.value = true
     emits('gameOver','撞到牆壁了');
     return
   }
@@ -123,10 +125,6 @@ const run = async(): Promise<void> => {
     addScore()
     await nextTick()
   }
-  // 蛇頭移動
-  if(snakeHead.value === null) return
-  snakeHead.value.style.left = left + 'px'
-  snakeHead.value.style.top = top + 'px'
 
   const snakeBody = document.querySelectorAll('.snakeBody')
 
@@ -135,17 +133,19 @@ const run = async(): Promise<void> => {
     try{
       snakeBody.forEach((item) => {
         const element = item as HTMLElement;
-        if(element.offsetLeft === snakeHead.value?.offsetLeft && 
-          element.offsetTop === snakeHead.value?.offsetTop){
-            throw new Error()
-          }
+        if(element.offsetLeft === left && element.offsetTop === top){
+          throw new Error()
+        }
       })
     }catch(e){
-      isOver.value = true
       emits('gameOver','撞到身體了');
       return
     }
   }
+  // 蛇頭移動
+  if(snakeHead.value === null) return
+  snakeHead.value.style.left = left + 'px'
+  snakeHead.value.style.top = top + 'px'
   // 蛇身移動
   snakeBody.forEach((item) => {
     const element = item as HTMLElement;
@@ -159,7 +159,7 @@ const run = async(): Promise<void> => {
 
   setTimeout(() => {
     run()
-  }, 300 - (level.value - 1) * 30);
+  }, 200 - (level.value - 1) * 20);
 }
 onMounted(() => {
   if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
@@ -195,11 +195,11 @@ onMounted(() => {
   gap: 20px;
   padding: 10px 0 20px;
   #stage{
-    width: 304px;
-    height: 304px;
+    width: 305px;
+    height: 305px;
     border: 2px solid #595959;
     position: relative;
-    background: black;
+    background-color: #000000;
     #snake{
       &>div{
         width: 10px;
@@ -232,7 +232,11 @@ onMounted(() => {
       }
     }
   }
-
+  .easy-mode {
+    background-image: linear-gradient(to right, #5b5b5b 1px, transparent 1px), linear-gradient(to bottom, #5d5d5d 1px, transparent 1px);
+    background-size: 10px 10px;
+    background-repeat: repeat;
+  }
   #score-panel{
     width: 100%;
     display: flex;
