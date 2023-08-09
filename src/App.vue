@@ -4,20 +4,33 @@
   </div>
   <SnakeGame 
     :key="changeTime"
+    @gameOver="gameOver"
   />
-  <div class="button-box">
-    <button @click="reStart">重新開始</button>
-  </div>
+  <OverDialog 
+    :reStart="reStart"
+    :overString="overString"
+    v-if="isGameOver"
+  />
 </template>
 
 <script lang="ts" setup>
 import SnakeGame from './components/SnakeGame.vue';
+import OverDialog from './components/OverDialog.vue';
 import { ref } from 'vue';
 import type { Ref } from 'vue';
 
-let changeTime: Ref<number> = ref(new Date().getTime())
+const changeTime: Ref<number> = ref(new Date().getTime())
+const isGameOver: Ref<boolean> = ref(false)
+const overString: Ref<string> = ref('')
+
 const reStart = ():void => {
   changeTime.value = new Date().getTime()
+  isGameOver.value = false
+}
+const gameOver = (isOver: string):void => {
+  console.log(isOver);
+  overString.value = isOver
+  isGameOver.value = true
 }
 </script>
 
@@ -39,11 +52,7 @@ const reStart = ():void => {
   }
 }
 button{
-  background: rgb(88, 227, 255);
-  padding: 5px 10px;
   border-radius: 5px;
-  border: 1px skyblue solid;
-  color: rgb(0, 109, 242);
   cursor: pointer;
   font-size: 20px;
 }

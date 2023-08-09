@@ -35,8 +35,10 @@
 import { ref,  onMounted, nextTick } from 'vue';
 import type { Ref } from 'vue';
 
+const emits = defineEmits<{
+  (e: 'gameOver', overString: string): void
+}>()
 const isMobile: Ref<boolean> = ref(false)
-
 const isStart: Ref<boolean> = ref(false);
 const isOver: Ref<boolean> = ref(false);
 
@@ -45,11 +47,9 @@ const level: Ref<number> = ref(1);
 const upScore = 5
 const maxLevel = 10;
 const direction: Ref<string> = ref('');
-
 const snakeHead: Ref<HTMLElement | null> = ref(null);
-const food: Ref<HTMLElement | null> = ref(null);
-
 const bodyLength: Ref<number> = ref(0);
+const food: Ref<HTMLElement | null> = ref(null);
 
 const changePosition = ():void => {
   const top: number = Math.round(Math.random() * 29) * 10
@@ -113,7 +113,7 @@ const run = async(): Promise<void> => {
   // 當碰到牆壁的時候
   if(left < 0 || left > 290 || top < 0 || top > 290){
     isOver.value = true
-    alert('撞到牆壁了')
+    emits('gameOver','撞到牆壁了');
     return
   }
   // 當吃到食物的時候
@@ -142,7 +142,7 @@ const run = async(): Promise<void> => {
       })
     }catch(e){
       isOver.value = true
-      alert('撞到身體了')
+      emits('gameOver','撞到身體了');
       return
     }
   }
@@ -220,19 +220,15 @@ onMounted(() => {
     }
     &>#food{
       position: absolute;
-      left: 40px;
-      top: 10px;
       width: 10px;
       height: 10px;
       display: flex;
       flex-wrap: wrap;
-      justify-content: space-between;
-      align-items: space-between;
       & > div{
-        width: 4px;
-        height: 4px;
+        width: 5px;
+        height: 5px;
         background-color: red;
-        animation: rotate alternate 3s infinite;
+        animation: rotate ease-in 2s infinite;
       }
     }
   }
@@ -253,7 +249,7 @@ onMounted(() => {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       grid-template-rows: repeat(3, 1fr);
-      gap: 5px;
+      gap: 10px;
       #up{
         grid-column: 2/3;
         grid-row: 1/2;
@@ -274,6 +270,7 @@ onMounted(() => {
     button{
       background: #95ff9c;
       color: #008521;
+      padding: 10px 15px;
     }
   }
 }
